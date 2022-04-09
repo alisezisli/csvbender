@@ -58,6 +58,8 @@ generate()
         fi
     fi
     #Seems right. Start generating:
+    #Change ~ with $HOME:
+    save_file=${save_file/#~\//$HOME\/} 
     #Clear the file:
     echo -n "" > ${save_file}
     for row_counter in $( seq 1 ${rows} )
