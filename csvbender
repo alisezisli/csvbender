@@ -1,5 +1,7 @@
 #!/bin/bash
+
 #Author: Ali Sezişli (https://alisezisli.com.tr) (https://gnuadm.in)
+
 #Exit Codes:
 #0- Success
 #1- Columns or rows are not positive integer
@@ -16,8 +18,19 @@ let max_handle=100
 
 help()
 {
-	#Display help
-    echo "help"
+	#Display help:
+	printf "csvbender helps you to split and search through CSV files or generate new ones with random data.\n
+Usage: csvbender [ACTION] [OPTIONS]\n
+Actions:\n"
+    printf "%-15s" "help"
+	printf "Displays this message\n"
+    printf "%-15s" "generate"
+	printf "Generate CSV file with random data (interactive)\n"
+    #TODO add new features
+    printf "\nExamples:
+Generate random data (interactive): csvbender generate
+Generate random data with one command: csvbender generate rows columns filename
+e.g. csvbender generate 35 42 random.csv\n\n"
 }
 generate()
 {
@@ -91,7 +104,8 @@ fi
 
 case ${arg_count} in
 	0)
-		#Start interactive:
+		#Show help:
+        help
 		;;
 	1)
 		#Only one argument:
