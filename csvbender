@@ -58,6 +58,24 @@ generate()
         fi
     fi
     #Seems right. Start generating:
+    #Clear the file:
+    echo -n "" > ${save_file}
+    for row_counter in $( seq 1 ${rows} )
+    do
+        row_data=""
+	    for column_counter in $( seq 1 ${columns} )
+        do
+            let char_count="${RANDOM:0:1}"+5
+            generated_data=$(echo $RANDOM | sha256sum | head -c $char_count)
+            row_data=${row_data},${generated_data}
+        done
+        #Get rid of first comma:
+        row_data="${row_data:1}"
+        echo ${row_data} >> ${save_file}
+        echo "Generated ${row_counter} rows..."
+    done
+    echo "CSV file with random data generated at ${save_file}"
+    exit 0
 }
 
 declare -i arg_count=$#
