@@ -6,6 +6,7 @@
 #2- Too many columns or rows
 #3- Filename is empty
 #4- User didn't want to overwrite existing file
+#5- User doesn't have write access to file
 
 #Number regex:
 number_regex='^[0-9]+$'
@@ -40,14 +41,23 @@ generate()
     #Check whether file exists:
     elif [[ -f ${save_file} ]]
     then
+        #Overwrite check
         printf "${save_file} already exists. Do you want to overwrite? (y/n): "
         read overwrite_check
         if [[ ${overwrite_check} != "y" ]]
         then
             echo "Operation terminated."
             exit 4
+        else
+            #Check if user has write permissions on existing file:
+            if [[ ! -w ${save_file} ]]
+            then
+                echo "You don't have write access to ${save_file}."
+                exit 5
+            fi
         fi
     fi
+    #Seems right. Start generating:
 }
 
 declare -i arg_count=$#
