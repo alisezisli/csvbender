@@ -7,6 +7,7 @@
 #3- Filename is empty
 #4- User didn't want to overwrite existing file
 #5- User doesn't have write access to file
+#6- CLI arguments are not valid
 
 #Number regex:
 number_regex='^[0-9]+$'
@@ -62,6 +63,7 @@ generate()
     save_file=${save_file/#~\//$HOME\/} 
     #Clear the file:
     echo -n "" > ${save_file}
+    #Generate the CSV file:
     for row_counter in $( seq 1 ${rows} )
     do
         row_data=""
@@ -104,6 +106,18 @@ case ${arg_count} in
         printf "Enter filename: "
         read save_file
         generate ${columns} ${rows} ${save_file}
+        else
+        echo 'Try "csvbender help" for help.'
+        exit 6
 		fi
+        ;;
+    4)
+        #Four arguments. Check whether it's generate:
+        if [[ $1 == "generate" ]]; then
+        generate $2 $3 $4
+        else
+        echo 'Try "csvbender help" for help.'
+        exit 6
+        fi
         ;;
 esac
