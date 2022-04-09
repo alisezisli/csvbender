@@ -3,9 +3,14 @@
 #Exit Codes:
 #0- Success
 #1- Columns or rows are not positive integer
+#2- Too many columns or rows
+#3- Filename is empty
+#4- User didn't want to overwrite existing file
 
 #Number regex:
 number_regex='^[0-9]+$'
+#Max rows and columns:
+let max_handle=100
 
 help()
 {
@@ -14,13 +19,34 @@ help()
 }
 generate()
 {
-    printf "How many columns do you need?: "
-    read columns
-    printf "How many rows do you need?: "
-    read rows
-    if [[ ! ${columns} =~ ${number_regex} ]] || [[ ! ${rows} =~ ${number_regex} ]]; then
-    echo "Columns and rows must be a positive integer."
-    exit 1
+    columns=$1
+    rows=$2
+    save_file=$3
+    #Columns and rows number check:
+    if [[ ! ${columns} =~ ${number_regex} ]] || [[ ! ${rows} =~ ${number_regex} ]]
+    then
+        echo "Columns and rows must be a positive integer."
+        exit 1
+    #Columns and rows max number check:
+    elif [[ ${columns} -gt ${max_handle} ]] || [[ ${rows} -gt ${max_handle} ]]
+    then
+        echo "Column or row can be ${max_handle} at most."
+        exit 2
+    #Filename check:
+    elif [[ -z ${save_file} ]]
+    then
+        echo "Filename can't be empty."
+        exit 3
+    #Check whether file exists:
+    elif [[ -f ${save_file} ]]
+    then
+        printf "${save_file} already exists. Do you want to overwrite? (y/n): "
+        read overwrite_check
+        if [[ ${overwrite_check} != "y" ]]
+        then
+            echo "Operation terminated."
+            exit 4
+        fi
     fi
 }
 
@@ -41,7 +67,13 @@ case ${arg_count} in
         help
 		elif [[ $1 == "generate" ]]; then
 		#Generate interactive:
-        generate
+        printf "How many columns do you need?: "
+        read columns
+        printf "How many rows do you need?: "
+        read rows
+        printf "Enter filename: "
+        read save_file
+        generate ${columns} ${rows} ${save_file}
 		fi
         ;;
 esac
